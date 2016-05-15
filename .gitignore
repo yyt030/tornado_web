@@ -1,0 +1,9 @@
+venv
+*.pyc
+.idea
+migrations
+download
+*.db
+*.html
+.swp
+*.*~
