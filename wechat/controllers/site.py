@@ -58,3 +58,10 @@ class MungedPageHandler(RequestHandler):
         print('-' * 100)
         self.render('munged.html', source_map=source_map, change_lines=change_lines,
                     choice=random.choice)
+
+
+class MainHandler(RequestHandler):
+    def get(self):
+        self.render('index.html',
+                    page_title="Burt's Books | Home",
+                    header_text="Welcome to Burt's Books!")
