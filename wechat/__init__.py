@@ -5,20 +5,21 @@ __author__ = 'yueyt'
 import os
 import pymongo
 import tornado.web
-from .controllers.definitions_readwrite import WordHandler
-from .controllers.hello_module import HelloHandler, HelloModule, RecommentHandler, BookModule
-from .controllers.site import MainHandler
+
+from .controllers.burts_books_db import MainHandler, RecommentHandler, BookModule
 
 
 class CreateApp(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r'/(\w+)', WordHandler),
+            (r"/", MainHandler),
+            (r"/recommended", RecommentHandler),
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
             static_path=os.path.join(os.path.dirname(__file__), 'static'),
             debug=True,
+            ui_modules={'Book': BookModule}
 
         )
         mongo_client = pymongo.MongoClient(host='localhost', port=27017)
