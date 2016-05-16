@@ -5,7 +5,7 @@ __author__ = 'yueyt'
 import os
 import pymongo
 import tornado.web
-from .controllers.definitions_readonly import WordHandler
+from .controllers.definitions_readwrite import WordHandler
 from .controllers.hello_module import HelloHandler, HelloModule, RecommentHandler, BookModule
 from .controllers.site import MainHandler
 
@@ -19,6 +19,7 @@ class CreateApp(tornado.web.Application):
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
             static_path=os.path.join(os.path.dirname(__file__), 'static'),
             debug=True,
+
         )
         mongo_client = pymongo.MongoClient(host='localhost', port=27017)
         self.db = mongo_client['example']
