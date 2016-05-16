@@ -22,7 +22,9 @@ class IndexHandler(RequestHandler):
     def get(self):
         # greeting = self.get_argument('greeting', 'hello')
         # self.write(greeting + ', friendly user!')
-        self.render('index.html')
+        self.render('index.html',
+                    header_text='Header goes here',
+                    footer_text='Footer goes here')
 
     def write_error(self, status_code, **kwargs):
         self.write('Error, {}\n'.format(status_code))
@@ -53,6 +55,6 @@ class MungedPageHandler(RequestHandler):
         text_to_change = self.get_argument('change')
         source_map = self.map_by_first_letter(source_text)
         change_lines = text_to_change.split('\r\n')
-        print('-'*100)
+        print('-' * 100)
         self.render('munged.html', source_map=source_map, change_lines=change_lines,
                     choice=random.choice)
