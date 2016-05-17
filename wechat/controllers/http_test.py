@@ -9,13 +9,11 @@ import tornado.web
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        url = 'http://localhost:5000/questions/newest'
-        client = tornado.httpclient.HTTPClient()
-        response = client.fetch(url)
-        if response:
-            self.write(response.body.decode('utf-8'))
-        else:
-            self.write('ok')
+        cookie = self.get_secure_cookie('count')
+        count = int(cookie) + 1 if cookie else 1
+        countString = "1 time" if count == 1 else "%d times" % count
+        self.set_secure_cookie("count", str(count))
+        self.render('index.html')
 
 
 class IndexAsyncHandler(tornado.web.RequestHandler):

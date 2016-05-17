@@ -2,28 +2,30 @@
 # coding: utf8
 __author__ = 'yueyt'
 
+import uuid
+
+import base64
 import os
 import tornado.web
-
-from .controllers.burts_books_db import MainHandler, RecommendedHandler, BookEditHandler
-from .controllers.http_test import IndexHandler, IndexAsyncHandler, IndexAsyncGenHandler
-from .controllers.shopping_cart import DetailHandler, CartHandler, StatusHandler,ShoppingCart
+from wechat.controllers.cookie import WelcomeHandler, LoginHandler, LogoutHandler
 
 
 class CreateApp(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r'/', DetailHandler),
-            (r'/cart', CartHandler),
-            (r'/cart/status', StatusHandler)
+            (r'/', WelcomeHandler),
+            (r'/login', LoginHandler),
+            (r'/logout', LogoutHandler)
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
             static_path=os.path.join(os.path.dirname(__file__), 'static'),
             debug=True,
-
+            cookie_secret=base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes),
+            xsrf_cookies=True,
+            login_url='/login'
         )
         # mongo_client = pymongo.MongoClient(host='localhost', port=27017)
         # self.db = mongo_client['example']
-        self.shoppingCart = ShoppingCart()
+
         tornado.web.Application.__init__(self, handlers, **settings)
