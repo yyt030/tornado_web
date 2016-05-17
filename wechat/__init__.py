@@ -6,20 +6,21 @@ import os
 import pymongo
 import tornado.web
 
-from .controllers.burts_books_db import MainHandler, RecommentHandler, BookModule
+from .controllers.burts_books_db import MainHandler, RecommendedHandler, BookEditHandler
 
 
 class CreateApp(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
-            (r"/recommended", RecommentHandler),
+            (r"/recommended[/]?", RecommendedHandler),
+            (r"/edit/([0-9Xx\-]+)", BookEditHandler),
+            (r"/add", BookEditHandler),
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
             static_path=os.path.join(os.path.dirname(__file__), 'static'),
             debug=True,
-            ui_modules={'Book': BookModule}
 
         )
         mongo_client = pymongo.MongoClient(host='localhost', port=27017)
