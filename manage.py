@@ -9,7 +9,7 @@ from tornado.options import parse_command_line, options, define
 from wechat import CreateApp
 
 if __name__ == '__main__':
-    define('port', default=5000, help='run on the given port', type=int)
+    define('port', default=8000, help='run on the given port', type=int)
     parse_command_line()
     app = CreateApp()
     http_server = HTTPServer(app)
