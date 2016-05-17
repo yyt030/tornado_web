@@ -4,6 +4,7 @@ __author__ = 'yueyt'
 from uuid import uuid4
 
 import tornado.web
+import tornado.websocket
 
 
 class ShoppingCart:
@@ -29,16 +30,17 @@ class ShoppingCart:
         self.notifyCallbacks()
 
     def notifyCallbacks(self):
-        for c in self.callbacks:
-            self.callbackHelper(c)
-
-        self.callbacks = []
+        for callback in self.callbacks:
+            callback(self.getInventoryCount())
 
     def callbackHelper(self, callback):
         callback(self.getInventoryCount())
 
     def getInventoryCount(self):
         return self.totalInventory - len(self.carts)
+
+    def unregister(self, callback):
+        self.callbacks.remove(callback)
 
 
 class DetailHandler(tornado.web.RequestHandler):
@@ -65,11 +67,15 @@ class CartHandler(tornado.web.RequestHandler):
             self.set_status(400)
 
 
-class StatusHandler(tornado.web.RequestHandler):
-    @tornado.web.asynchronous
-    def get(self):
-        self.application.shoppingCart.register(self.on_message)
+class StatusHandler(tornado.websocket.WebSocketHandler):
+    def open(self):
+        self.application.shoppingCart.register(self.callback)
 
-    def on_message(self, count):
-        self.write('{"inventoryCount":"%d"}' % count)
-        self.finish()
+    def on_close(self):
+        self.application.shoppingCart.unregister(self.callback)
+
+    def on_message(self, message):
+        pass
+
+    def callback(self, count):
+        self.write_message('{"inventoryCount":"%d"}' % count)

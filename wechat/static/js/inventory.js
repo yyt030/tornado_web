@@ -45,10 +45,13 @@ $(document).ready(function() {
 });
 
 function requestInventory() {
-    jQuery.getJSON('//localhost:8000/cart/status', {session: document.session},
-        function(data, status, xhr) {
-            $('#count').html(data['inventoryCount']);
-            setTimeout(requestInventory, 0);
-        }
-    );
+    var host = 'ws://localhost:8000/cart/status';
+
+    var websocket = new WebSocket(host);
+
+    websocket.onopen = function (evt) { };
+    websocket.onmessage = function(evt) {
+        $('#count').html($.parseJSON(evt.data)['inventoryCount']);
+    };
+    websocket.onerror = function (evt) { };
 }
